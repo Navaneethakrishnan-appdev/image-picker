@@ -1,7 +1,12 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker_test/home_page.dart';
+import 'package:image_picker_test/exercise_listing_screen.dart';
 
-void main() {
+late List<CameraDescription> cameras;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
+
   runApp(const MyApp());
 }
 
@@ -32,7 +37,8 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomePage(),
+      // home: LiveCameraFitnessTracker(cameras: _cameras),
+      home: ExerciseListingScreen(),
     );
   }
 }
