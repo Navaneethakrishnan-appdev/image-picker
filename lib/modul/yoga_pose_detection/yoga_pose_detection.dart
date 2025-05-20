@@ -1,17 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:image_picker/image_picker.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class YogaPoseDetection extends StatefulWidget {
+  const YogaPoseDetection({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<YogaPoseDetection> createState() => _YogaPoseDetectionState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _YogaPoseDetectionState extends State<YogaPoseDetection> {
   late ImagePicker imagePicker;
   File? _image;
   late PoseDetector poseDetector;
@@ -299,7 +300,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xffffe5f6),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -319,43 +320,30 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-
-                        // Image.file(
-                        //   _image!,
-                        //   height: MediaQuery.of(context).size.height - 300,
-                        // ),
                       )
                       : SizedBox(
                         height: MediaQuery.of(context).size.height - 300,
-                        child: Image.asset('assets/images/bg.jpg'),
+                        child: SizedBox(
+                          // height: 500,
+                          child: Image.asset(
+                            'assets/images/yogapose5.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
             ),
           ),
-
-          // Expanded(
-          //   child: Container(
-          //     height: 100,
-          //     width: 500,
-          //     decoration: BoxDecoration(color: Colors.white),
-          //     child: Center(
-          //       child: Text(
-          //         poseMessage,
-          //         style: TextStyle(color: Colors.black, fontSize: 20),
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Visibility(
             visible:
                 _image != null, // Message box visible only after image upload
             child: Container(
               height: 100, // Set a specific smaller height for the message box
               width: 350, // Adjusted width to make the box smaller
-              margin: EdgeInsets.all(
-                8,
+              margin: EdgeInsets.only(
+                top: 110,
               ), // Reduced margin for a more compact look
               decoration: BoxDecoration(
-                color: Colors.black26,
+                color: Colors.white70,
                 borderRadius: BorderRadius.circular(
                   8,
                 ), // Slightly smaller rounded corners
@@ -368,7 +356,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
                 border: Border.all(
-                  color: Colors.white, // Border color
+                  color: Color(0xff9B7EBD), // Border color
                   width: 1.5, // Border width
                 ),
               ),
@@ -380,8 +368,8 @@ class _HomePageState extends State<HomePage> {
                   child: Text(
                     poseMessage,
                     textAlign: TextAlign.center, // Center the message text
-                    style: TextStyle(
-                      color: Colors.white,
+                    style: GoogleFonts.outfit(
+                      color: Color(0xff9B7EBD),
                       fontSize:
                           16, // Smaller font size for a more compact message
                       fontWeight: FontWeight.w500, // Lighter boldness
@@ -391,8 +379,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
-          SizedBox(height: 20),
 
           //TODO bottom section
           Padding(
@@ -407,30 +393,18 @@ class _HomePageState extends State<HomePage> {
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Color(0xffffe5f6),
                       borderRadius: BorderRadius.circular(50),
+                      border: Border.all(
+                        color: Color(0xff9B7EBD), // Border color
+                        width: 2.0, // Border width
+                      ),
                     ),
                     child: Column(
                       children: [
-                        Icon(Icons.photo, color: Colors.black, size: 30),
+                        Icon(Icons.photo, color: Color(0xff9B7EBD), size: 30),
                       ],
                     ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.limeAccent,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        'assets/images/logo.png',
-                        height: 50,
-                        width: 50,
-                      ),
-                    ],
                   ),
                 ),
                 InkWell(
@@ -440,12 +414,20 @@ class _HomePageState extends State<HomePage> {
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Color(0xffffe5f6),
                       borderRadius: BorderRadius.circular(50),
+                      border: Border.all(
+                        color: Color(0xff9B7EBD), // Border color
+                        width: 2.0, // Border width
+                      ),
                     ),
                     child: Column(
                       children: [
-                        Icon(Icons.camera, color: Colors.black, size: 30),
+                        Icon(
+                          Icons.camera_alt,
+                          color: Color(0xff9B7EBD),
+                          size: 30,
+                        ),
                       ],
                     ),
                   ),
@@ -477,12 +459,12 @@ class posePainter extends CustomPainter {
     Paint leftPaint = Paint();
     leftPaint.color = Colors.yellow;
     leftPaint.style = PaintingStyle.fill;
-    leftPaint.strokeWidth = 2;
+    leftPaint.strokeWidth = 3;
 
     Paint rightPaint = Paint();
     rightPaint.color = Colors.purple;
     rightPaint.style = PaintingStyle.fill;
-    rightPaint.strokeWidth = 2;
+    rightPaint.strokeWidth = 3;
 
     for (Pose pose in poses) {
       // to access all landmarks

@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker_test/exercise_listing_screen.dart';
+import 'package:image_picker_test/modul/yoga_pose_detection/yoga_pose_detection.dart';
 
 late List<CameraDescription> cameras;
 Future<void> main() async {
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: LiveCameraFitnessTracker(cameras: _cameras),
-      home: ExerciseListingScreen(),
+      home: YogaPoseDetection(),
     );
   }
 }

@@ -1,18 +1,33 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
-import 'package:image_picker_test/exercise_data_model.dart';
+// import 'package:image_picker_test/exercise_data_model.dart';
+import 'package:image_picker_test/main.dart';
+import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_data_model.dart';
+import 'package:image_picker_test/modul/live_camera_fitness_tracker/level_selection_page.dart';
+// import 'package:image_picker_test/test/level_selection_page.dart';
 
-import 'main.dart';
+// import 'main.dart';
 
 class LiveCameraFitnessTracker extends StatefulWidget {
-  LiveCameraFitnessTracker({super.key, required this.exerciseDataModel});
+  final ExerciseDataModel exerciseDataModel;
+  final ExerciseLevel selectedLevel;
+  final int currentLevelIndex;
+  final List<ExerciseLevel> allLevels;
 
-  ExerciseDataModel exerciseDataModel;
+  LiveCameraFitnessTracker({
+    super.key,
+    required this.exerciseDataModel,
+    required this.selectedLevel,
+    required this.currentLevelIndex,
+    required this.allLevels,
+  });
 
   @override
   State<LiveCameraFitnessTracker> createState() =>
@@ -23,13 +38,180 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
   dynamic controller;
   bool isBusy = false;
   late Size size;
+  late Timer _timer;
+  int _timeLeft = 0;
+  int _currentCount = 0;
+  bool _isExerciseComplete = false;
+  bool _exerciseStarted = false;
 
   //TODO declare detector
   late PoseDetector poseDetector;
+
   @override
   void initState() {
     super.initState();
     initializeCamera();
+    _timeLeft = widget.selectedLevel.durationInSeconds;
+    startTimer();
+  }
+
+  void startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_timeLeft <= 0) {
+        if (_exerciseStarted) {
+          checkExerciseResult();
+        }
+        timer.cancel();
+      } else {
+        setState(() {
+          _timeLeft--;
+        });
+      }
+    });
+  }
+
+  void checkExerciseResult() {
+    setState(() {
+      _isExerciseComplete = true;
+    });
+
+    if (_currentCount >= widget.selectedLevel.targetCount) {
+      // Mark current level as completed
+      setState(() {
+        widget.selectedLevel.markAsCompleted();
+      });
+
+      // Show success dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder:
+            (context) => AlertDialog(
+              title: Text(
+                'Level Complete! 🎉',
+                style: GoogleFonts.outfit(
+                  color: widget.exerciseDataModel.color,
+                ),
+              ),
+              content: Text(
+                'You completed ${_currentCount} ${widget.exerciseDataModel.title.toLowerCase()}!',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close dialog
+                    if (widget.currentLevelIndex + 1 <
+                        widget.allLevels.length) {
+                      // Go to next level
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => LiveCameraFitnessTracker(
+                                exerciseDataModel: widget.exerciseDataModel,
+                                selectedLevel:
+                                    widget.allLevels[widget.currentLevelIndex +
+                                        1],
+                                currentLevelIndex: widget.currentLevelIndex + 1,
+                                allLevels: widget.allLevels,
+                              ),
+                        ),
+                      );
+                    } else {
+                      // If no more levels, go back to level selection
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Text(
+                    'Next Level',
+                    style: GoogleFonts.outfit(
+                      color: widget.exerciseDataModel.color,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close dialog
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => LevelSelectionPage(
+                              exerciseDataModel: widget.exerciseDataModel,
+                            ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Close',
+                    style: GoogleFonts.outfit(
+                      color: widget.exerciseDataModel.color,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+      );
+    } else {
+      // Show failure dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder:
+            (context) => AlertDialog(
+              title: Text(
+                'Level Failed 😔',
+                style: GoogleFonts.outfit(
+                  color: widget.exerciseDataModel.color,
+                ),
+              ),
+              content: Text(
+                'You completed ${_currentCount} out of ${widget.selectedLevel.targetCount} ${widget.exerciseDataModel.title.toLowerCase()}.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close dialog
+                    setState(() {
+                      _timeLeft = widget.selectedLevel.durationInSeconds;
+                      _currentCount = 0;
+                      _isExerciseComplete = false;
+                      _exerciseStarted = false;
+                    });
+                    // Restart the timer after resetting state
+                    startTimer();
+                  },
+                  child: Text(
+                    'Try Again',
+                    style: GoogleFonts.outfit(
+                      color: widget.exerciseDataModel.color,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close dialog
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => LevelSelectionPage(
+                              exerciseDataModel: widget.exerciseDataModel,
+                            ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Close',
+                    style: GoogleFonts.outfit(
+                      color: widget.exerciseDataModel.color,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+      );
+    }
   }
 
   //TODO code to initialize the camera feed
@@ -71,10 +253,15 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
   }
 
   //TODO pose detection on a frame
-  dynamic _scanResults;
+  List<Pose> _scanResults = [];
   CameraImage? img;
 
   doPoseEstimationOnFrame() async {
+    if (!_exerciseStarted) {
+      isBusy = false;
+      return;
+    }
+
     var inputImage = _inputImageFromCameraImage(img!);
 
     if (inputImage == null) {
@@ -90,7 +277,10 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
     try {
       final List<Pose> poses = await poseDetector.processImage(inputImage);
       print('✅ Poses = ${poses.length.toString()}');
-      _scanResults = poses;
+      setState(() {
+        _scanResults = poses;
+        isBusy = false;
+      });
       if (poses.length > 0) {
         if (widget.exerciseDataModel.type == ExerciseType.pushUps) {
           detectPushUp(poses.first.landmarks);
@@ -108,16 +298,12 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
     } catch (e) {
       print('❌ Error in pose detection: $e');
     }
-
-    setState(() {
-      _scanResults;
-      isBusy = false;
-    });
   }
 
   //close all resources
   @override
   void dispose() {
+    _timer.cancel();
     controller?.dispose();
     poseDetector.close();
     super.dispose();
@@ -125,99 +311,145 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
 
   @override
   Widget build(BuildContext context) {
-    ///displaying live camera  footage
     List<Widget> stackChildren = [];
-    size = MediaQuery.of(context).size;
-    if (controller != null) {
+    if (controller != null && controller.value.isInitialized) {
       stackChildren.add(
-        Positioned(
-          top: 0.0,
-          left: 0.0,
-          width: size.width,
-          height: size.height,
-          child: Container(
-            child:
-                (controller.value.isInitialized)
-                    ? AspectRatio(
-                      aspectRatio: controller.value.aspectRatio,
-                      child: CameraPreview(controller),
-                    )
-                    : Container(),
+        SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: CameraPreview(controller),
+        ),
+      );
+
+      if (controller.value.previewSize != null) {
+        final previewSize = controller.value.previewSize!;
+        final isPortrait =
+            MediaQuery.of(context).size.height >
+            MediaQuery.of(context).size.width;
+        final painterSize =
+            isPortrait
+                ? Size(previewSize.height, previewSize.width)
+                : Size(previewSize.width, previewSize.height);
+        stackChildren.add(
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: CustomPaint(painter: PosePainter(_scanResults, painterSize)),
           ),
-        ),
-      );
+        );
+      }
 
-      stackChildren.add(
-        Positioned(
-          top: 0.0,
-          left: 0.0,
-          width: size.width,
-          height: size.height,
-          child: buildResult(),
-        ),
-      );
-
-      stackChildren.add(
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            height: 70,
-            width: 70,
-            margin: EdgeInsets.only(bottom: 20),
-            decoration: BoxDecoration(
-              color: widget.exerciseDataModel.color,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: Center(
+      if (!_exerciseStarted) {
+        stackChildren.add(
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _exerciseStarted = true;
+                  _timeLeft = widget.selectedLevel.durationInSeconds;
+                  _currentCount = 0;
+                  startTimer();
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                backgroundColor: widget.exerciseDataModel.color,
+              ),
               child: Text(
-                widget.exerciseDataModel.type == ExerciseType.pushUps
-                    ? '$pushUpCount'
-                    : widget.exerciseDataModel.type == ExerciseType.squats
-                    ? '$squatCount'
-                    : widget.exerciseDataModel.type ==
-                        ExerciseType.downwardDogPlank
-                    ? '$plankToDownwardDogCount'
-                    : widget.exerciseDataModel.type == ExerciseType.jumpingJack
-                    ? '$jumpingJackCount'
-                    : '$highKneeCount',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                'Start',
+                style: GoogleFonts.outfit(fontSize: 24, color: Colors.white),
               ),
             ),
           ),
-        ),
-      );
+        );
+      }
+
+      if (_exerciseStarted) {
+        stackChildren.add(
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 70,
+              width: 70,
+              margin: EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: widget.exerciseDataModel.color,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Center(
+                child: Text(
+                  '$_currentCount',
+                  style: GoogleFonts.outfit(fontSize: 20, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+
+    if (_exerciseStarted) {
       stackChildren.add(
         Align(
           alignment: Alignment.topCenter,
-          child: Container(
-            height: 70,
-            width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.only(left: 20, right: 20, top: 50),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              color: widget.exerciseDataModel.color,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    widget.exerciseDataModel.title,
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Timer container
+              Container(
+                margin: EdgeInsets.only(top: 50),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  color: widget.exerciseDataModel.color,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  'Time: $_timeLeft seconds',
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
                   ),
-                  Image(
-                    image: AssetImage(
-                      'assets/gif/${widget.exerciseDataModel.image}',
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+
+              Container(
+                height: 70,
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: widget.exerciseDataModel.color,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        '${widget.exerciseDataModel.title} - Level ${widget.selectedLevel.levelNumber}',
+                        style: GoogleFonts.outfit(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Image(
+                        image: AssetImage(
+                          'assets/gif/${widget.exerciseDataModel.image}',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       );
     }
+
+    print("Scan results length: ${_scanResults.length}");
+
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.only(top: 0),
@@ -275,11 +507,10 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
       isLowered = true;
     } else if (avgElbowAngle > 160 && isLowered && inPlankPosition) {
       // User returns to the starting position
-      pushUpCount++;
+      setState(() {
+        _currentCount++;
+      });
       isLowered = false;
-
-      // Update UI
-      setState(() {});
     }
   }
 
@@ -321,11 +552,10 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
         isSquatting = true;
       }
     } else if (!deepSquat && isSquatting) {
-      squatCount++;
+      setState(() {
+        _currentCount++;
+      });
       isSquatting = false;
-
-      // Update UI
-      setState(() {});
     }
   }
 
@@ -370,11 +600,10 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
     if (isDownwardDog && !isInDownwardDog) {
       isInDownwardDog = true;
     } else if (isPlank && isInDownwardDog) {
-      plankToDownwardDogCount++;
+      setState(() {
+        _currentCount++;
+      });
       isInDownwardDog = false;
-
-      // Print count
-      print("Plank to Downward Dog Count: $plankToDownwardDogCount");
     }
   }
 
@@ -422,11 +651,10 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
     if (armsUp && legsApart && !isJumpingJack) {
       isJumpingJack = true;
     } else if (!armsUp && !legsApart && isJumpingJack) {
-      jumpingJackCount++;
+      setState(() {
+        _currentCount++;
+      });
       isJumpingJack = false;
-
-      // Print the count
-      print("Jumping Jack Count: $jumpingJackCount");
     }
   }
 
@@ -455,9 +683,10 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
       }
     } else if (isLeftKneeUp && leftKnee.y > leftHip.y + 20) {
       // Knee was up, now came down → count one rep
-      highKneeCount++;
+      setState(() {
+        _currentCount++;
+      });
       isLeftKneeUp = false;
-      setState(() {});
     }
 
     // RIGHT KNEE HIGH CHECK
@@ -466,9 +695,10 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
         isRightKneeUp = true;
       }
     } else if (isRightKneeUp && rightKnee.y > rightHip.y + 20) {
-      highKneeCount++;
+      setState(() {
+        _currentCount++;
+      });
       isRightKneeUp = false;
-      setState(() {});
     }
   }
 
@@ -552,19 +782,19 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
       return Text('');
     }
     final Size imageSize = Size(
-      controller.value.previewSize!.height,
       controller.value.previewSize!.width,
+      controller.value.previewSize!.height,
     );
-    CustomPainter painter = PosePainter(imageSize, _scanResults);
+    CustomPainter painter = PosePainter(_scanResults, imageSize);
     return CustomPaint(painter: painter);
   }
 }
 
 class PosePainter extends CustomPainter {
-  PosePainter(this.absoluteImageSize, this.poses);
+  PosePainter(this.poses, this.absoluteImageSize);
 
-  final Size absoluteImageSize;
   final List<Pose> poses;
+  final Size absoluteImageSize;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -720,6 +950,10 @@ class PosePainter extends CustomPainter {
         rightPaint,
       );
     }
+
+    print(
+      "Painting ${poses.length} poses, canvas size: $size, image size: $absoluteImageSize",
+    );
   }
 
   @override
