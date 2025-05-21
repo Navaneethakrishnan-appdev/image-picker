@@ -18,7 +18,7 @@ class _ExerciseListingScreenState extends State<ExerciseListingScreen> {
       ExerciseDataModel(
         "Push Ups",
         "pushup.gif",
-        Color(0xff005F9C),
+        Color(0xffe0b1cb),
         ExerciseType.pushUps,
       ),
     );
@@ -26,7 +26,7 @@ class _ExerciseListingScreenState extends State<ExerciseListingScreen> {
       ExerciseDataModel(
         "Squats",
         "squat.gif",
-        Color(0xffDF5889),
+        Color(0xffbe95c4),
         ExerciseType.squats,
       ),
     );
@@ -34,7 +34,7 @@ class _ExerciseListingScreenState extends State<ExerciseListingScreen> {
       ExerciseDataModel(
         "Downward Dog",
         "plank.gif",
-        Color(0xffFD8636),
+        Color(0xff9f86c0),
         ExerciseType.downwardDogPlank,
       ),
     );
@@ -42,7 +42,7 @@ class _ExerciseListingScreenState extends State<ExerciseListingScreen> {
       ExerciseDataModel(
         "Jumping Jack",
         "jumping.gif",
-        Color(0xff7F55B1),
+        Color(0xff5e548e),
         ExerciseType.jumpingJack,
       ),
     );
@@ -51,7 +51,7 @@ class _ExerciseListingScreenState extends State<ExerciseListingScreen> {
       ExerciseDataModel(
         "High Knees",
         "High-Knee.gif",
-        Color(0xff670D2F),
+        Color(0xff231942),
         ExerciseType.highKnees,
       ),
     );
@@ -72,7 +72,21 @@ class _ExerciseListingScreenState extends State<ExerciseListingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('AI Exercises', style: GoogleFonts.outfit()),
+        backgroundColor: Color(0xffAA60C8),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.navigate_before, size: 35, color: Colors.white),
+        ),
+        title: Text(
+          'AI Exercises',
+          style: GoogleFonts.outfit(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Container(
@@ -94,11 +108,24 @@ class _ExerciseListingScreenState extends State<ExerciseListingScreen> {
               },
               child: Container(
                 height: 150,
-                margin: EdgeInsets.only(left: 15, top: 6, right: 15, bottom: 6),
+                margin: EdgeInsets.only(
+                  left: 15,
+                  top: 10,
+                  right: 15,
+                  bottom: 10,
+                ),
                 padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   color: exerciseList[index].color,
                   borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.8),
+                      spreadRadius: 4,
+                      blurRadius: 10,
+                      offset: Offset(0, 3), // horizontal, vertical offset
+                    ),
+                  ],
                 ),
                 child: Stack(
                   children: [

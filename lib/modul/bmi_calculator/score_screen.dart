@@ -63,7 +63,9 @@ class _ScoreScreenState extends State<ScoreScreen> {
           padding: const EdgeInsets.all(12),
           child: Card(
             elevation: 12,
-            shape: RoundedRectangleBorder(),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker_test/modul/bmi_calculator/bmi_calculator.dart';
+import 'package:image_picker_test/home_screen.dart';
 
 late List<CameraDescription> cameras;
 Future<void> main() async {
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: LiveCameraFitnessTracker(cameras: _cameras),
-      home: BmiCalculator(),
+      home: HomeScreen(),
     );
   }
 }

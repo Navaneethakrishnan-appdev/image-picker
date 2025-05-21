@@ -301,12 +301,21 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffffe5f6),
+      appBar: AppBar(
+        backgroundColor: Color(0xffffe5f6),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.navigate_before, size: 35, color: Color(0xff9B7EBD)),
+        ),
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           //TODO display image
           Container(
-            margin: const EdgeInsets.only(top: 100),
+            margin: const EdgeInsets.only(top: 0),
             child: Container(
               child:
                   image != null

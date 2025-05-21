@@ -32,6 +32,12 @@ class _BmiCalculatorState extends State<BmiCalculator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.navigate_before, size: 35, color: Colors.white),
+        ),
         title: Text(
           'BMI Calculator',
           style: GoogleFonts.outfit(
@@ -48,7 +54,9 @@ class _BmiCalculatorState extends State<BmiCalculator> {
           padding: EdgeInsets.all(12),
           child: Card(
             elevation: 12,
-            shape: RoundedRectangleBorder(),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Column(
               children: [
                 //let create widget for gender selection
