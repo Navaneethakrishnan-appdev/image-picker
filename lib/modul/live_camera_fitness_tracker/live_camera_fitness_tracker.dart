@@ -7,13 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
-// import 'package:image_picker_test/exercise_data_model.dart';
 import 'package:image_picker_test/main.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_data_model.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/level_selection_page.dart';
-// import 'package:image_picker_test/test/level_selection_page.dart';
-
-// import 'main.dart';
 
 class LiveCameraFitnessTracker extends StatefulWidget {
   final ExerciseDataModel exerciseDataModel;
