@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "987188041075",
+    "project_id": "ai-fitness-trainer-de244",
+    "storage_bucket": "ai-fitness-trainer-de244.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987188041075:android:7e4080cda3d3dc7341a106",
+        "android_client_info": {
+          "package_name": "com.example.image_picker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7jWZmZh3bVBaYHmbnGI2LIod11ZWlfMY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
