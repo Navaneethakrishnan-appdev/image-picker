@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   // Get current user
   Future<User?> getCurrentUser() async {
@@ -16,7 +18,64 @@ class AuthService {
 
   // Sign out
   Future<void> signOut() async {
+    await _googleSignIn.signOut();
     await _auth.signOut();
+  }
+
+  // Sign in with Google
+  Future<String?> signInWithGoogle() async {
+    try {
+      print("🚀 Starting Google sign in process...");
+      
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      
+      if (googleUser == null) {
+        print("❌ Google sign in was cancelled by user");
+        return "Sign in cancelled";
+      }
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the Google credential
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        // Check if user exists in Firestore
+        final userDoc = await _firestore.collection('users').doc(user.uid).get();
+        
+        if (!userDoc.exists) {
+          // Create new user document if it doesn't exist
+          await _firestore.collection('users').doc(user.uid).set({
+            'name': user.displayName,
+            'email': user.email,
+            'uid': user.uid,
+            'photoURL': user.photoURL,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+        }
+        
+        print("✅ Google sign in successful");
+        return null;
+      } else {
+        print("❌ Failed to get user from Google sign in");
+        return "Failed to get user information";
+      }
+    } catch (e) {
+      print("🔥 Error during Google sign in: $e");
+      if (e is FirebaseAuthException) {
+        return "Authentication error: ${e.message}";
+      }
+      return "Unexpected error: $e";
+    }
   }
 
   Future<String?> signUpWithEmail({

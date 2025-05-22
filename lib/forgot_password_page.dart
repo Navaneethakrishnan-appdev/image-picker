@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'services/auth_service.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -31,7 +32,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         _isSuccess = false;
       });
 
-      final error = await _authService.forgotPassword(_emailController.text.trim());
+      final error = await _authService.forgotPassword(
+        _emailController.text.trim(),
+      );
 
       if (mounted) {
         setState(() {
@@ -63,6 +66,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
         ),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.navigate_before, size: 35, color: Colors.white),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -110,15 +119,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.grey[300]!,
-                      ),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: Color(0xff129990),
-                      ),
+                      borderSide: const BorderSide(color: Color(0xff129990)),
                     ),
                   ),
                   validator: (value) {
@@ -170,23 +175,24 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
+                  child:
+                      _isLoading
+                          ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                          : Text(
+                            'Reset Password',
+                            style: GoogleFonts.outfit(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
                           ),
-                        )
-                      : Text(
-                          'Reset Password',
-                          style: GoogleFonts.outfit(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
                 ),
               ],
             ),
@@ -195,4 +201,4 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       ),
     );
   }
-} 
+}

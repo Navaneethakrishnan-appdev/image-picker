@@ -5,6 +5,7 @@ import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_lis
 import 'package:image_picker_test/modul/yoga_pose_detection/yoga_pose_detection.dart';
 import 'services/auth_service.dart';
 import 'signin_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,6 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final AuthService _authService = AuthService();
   String? userEmail;
   String? userName;
+  String? userPhotoUrl;
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         userEmail = user?.email;
         userName = user?.displayName ?? 'Fitness User';
+        userPhotoUrl = user?.photoURL;
       });
     }
   }
@@ -66,15 +69,33 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text(userName ?? 'Fitness User'),
-              accountEmail: Text(userEmail ?? 'Loading...'),
+              accountName: Text(
+                userName ?? 'Fitness User',
+                style: GoogleFonts.outfit(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              accountEmail: Text(
+                userEmail ?? 'Loading...',
+                style: GoogleFonts.outfit(
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.8),
+                ),
+              ),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.person,
-                  size: 40,
-                  color: const Color(0xff129990),
-                ),
+                backgroundImage: userPhotoUrl != null
+                    ? NetworkImage(userPhotoUrl!)
+                    : null,
+                child: userPhotoUrl == null
+                    ? Icon(
+                        Icons.person,
+                        size: 40,
+                        color: const Color(0xff129990),
+                      )
+                    : null,
               ),
               decoration: const BoxDecoration(
                 color: Color(0xff129990),
