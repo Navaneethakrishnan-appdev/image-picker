@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker_test/modul/bmi_calculator/bmi_calculator.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_listing_screen.dart';
 import 'package:image_picker_test/modul/yoga_pose_detection/yoga_pose_detection.dart';
+import 'services/auth_service.dart';
+import 'signin_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,12 +14,43 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final AuthService _authService = AuthService();
+  String? userEmail;
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final user = await _authService.getCurrentUser();
+    if (mounted) {
+      setState(() {
+        userEmail = user?.email;
+        userName = user?.displayName ?? 'Fitness User';
+      });
+    }
+  }
+
+  Future<void> _signOut() async {
+    await _authService.signOut();
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const SignInPage()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Color(0xff129990),
+        backgroundColor: const Color(0xff129990),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           'AI Fitness Trainer',
           style: GoogleFonts.outfit(
@@ -27,6 +60,80 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         centerTitle: true,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(userName ?? 'Fitness User'),
+              accountEmail: Text(userEmail ?? 'Loading...'),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.person,
+                  size: 40,
+                  color: const Color(0xff129990),
+                ),
+              ),
+              decoration: const BoxDecoration(
+                color: Color(0xff129990),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home,color: Colors.black,),
+              title: const Text('Home'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.fitness_center,color: Colors.black),
+              title: const Text('Exercises'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ExerciseListingScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.self_improvement,color: Colors.black),
+              title: const Text('Yoga Pose Detection'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => YogaPoseDetection(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.calculate,color: Colors.black),
+              title: const Text('BMI Calculator'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BmiCalculator(),
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout,color: Colors.black),
+              title: const Text('Sign Out'),
+              onTap: _signOut,
+            ),
+          ],
+        ),
       ),
       body: Container(
         height: double.infinity,
