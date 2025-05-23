@@ -5,6 +5,7 @@ import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_lis
 import 'package:image_picker_test/modul/yoga_pose_detection/yoga_pose_detection.dart';
 import 'services/auth_service.dart';
 import 'signin_page.dart';
+import 'profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -106,6 +107,19 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Home'),
               onTap: () {
                 Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.person,color: Colors.black,),
+              title: const Text('Profile'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfilePage(),
+                  ),
+                );
               },
             ),
             ListTile(

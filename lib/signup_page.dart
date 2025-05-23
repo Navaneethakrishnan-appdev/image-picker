@@ -232,9 +232,30 @@ class _SignUpPageState extends State<SignUpPage> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
                     }
+                    
+                    // List of allowed email domains
+                    final allowedDomains = [
+                      'gmail.com',
+                      'outlook.com',
+                      'hotmail.com', // Outlook's other domain
+                      'yahoo.com',
+                      'protonmail.com',
+                      'tutanota.com'
+                    ];
+                    
+                    // Check if email contains @ and .
                     if (!value.contains('@') || !value.contains('.')) {
                       return 'Please enter a valid email';
                     }
+                    
+                    // Extract domain from email
+                    final domain = value.split('@')[1].toLowerCase();
+                    
+                    // Check if domain is in allowed list
+                    if (!allowedDomains.contains(domain)) {
+                      return 'Please use Gmail, Outlook, Yahoo Mail, ProtonMail, or Tutanota email';
+                    }
+                    
                     return null;
                   },
                 ),
@@ -297,7 +318,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _isLoading ? null : _signUp,
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    if (_isLoading) {
+                      return;
+                    }
+                    _signUp();
+                    
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff129990),
                     padding: const EdgeInsets.symmetric(vertical: 15),

@@ -167,7 +167,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _isLoading ? null : _resetPassword,
+                  onPressed:() {
+                    FocusScope.of(context).unfocus();
+                    if (_isLoading) {
+                      return;
+                    }
+                    _resetPassword();
+                    
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff129990),
                     padding: const EdgeInsets.symmetric(vertical: 15),
