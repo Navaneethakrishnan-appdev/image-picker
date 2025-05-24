@@ -66,7 +66,7 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
     });
   }
 
-  void checkExerciseResult() {
+  Future<void> checkExerciseResult() async {
     setState(() {
       _isExerciseComplete = true;
     });
@@ -76,6 +76,9 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
       setState(() {
         widget.selectedLevel.markAsCompleted();
       });
+
+      // Save completion status to Firestore
+      await widget.exerciseDataModel.saveCompletionStatus();
 
       // Show success dialog
       showDialog(
