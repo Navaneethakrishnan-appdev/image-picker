@@ -346,6 +346,87 @@ class _HomeScreenState extends State<HomeScreen> {
                         bottom: 0,
                       ),
                       child: Text(
+                        'Food Chart:',
+                        style: GoogleFonts.outfit(
+                          fontSize: 20,
+                          color: Color(0xff129990),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BmiCalculator(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: 150,
+                      width: 350,
+                      margin: EdgeInsets.only(
+                        right: 15,
+                        left: 15,
+                        top: 15,
+                        bottom: 0,
+                      ),
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: Color(0xffC1E2A4),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white, width: 1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 4,
+                            blurRadius: 10,
+                            offset: Offset(0, 3), // horizontal, vertical offset
+                          ),
+                        ],
+                      ),
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              'Food Chart',
+                              style: GoogleFonts.outfit(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: SizedBox(
+                              height: 150,
+                              width: 150,
+                              child: Image(
+                                image: AssetImage(
+                                  'assets/images/home_food_chart1.png',
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        right: 15,
+                        left: 15,
+                        top: 15,
+                        bottom: 0,
+                      ),
+                      child: Text(
                         'BMI Calculator:',
                         style: GoogleFonts.outfit(
                           fontSize: 20,

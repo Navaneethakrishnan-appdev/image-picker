@@ -12,21 +12,26 @@ class YogaPoseDetection extends StatefulWidget {
   State<YogaPoseDetection> createState() => _YogaPoseDetectionState();
 }
 
-class _YogaPoseDetectionState extends State<YogaPoseDetection> {
+class _YogaPoseDetectionState extends State<YogaPoseDetection>
+    with WidgetsBindingObserver {
   late ImagePicker imagePicker;
   File? _image;
   late PoseDetector poseDetector;
   var image;
   List<Pose> poses = [];
   String poseMessage = '';
+  bool _isProcessing = false;
+  bool _isDisposed = false;
 
-  //TODO declare detector
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _initializeCamera();
+  }
+
+  void _initializeCamera() {
     imagePicker = ImagePicker();
-    //TODO initialize detector
     final options = PoseDetectorOptions(
       model: PoseDetectionModel.accurate,
       mode: PoseDetectionMode.single,
@@ -35,70 +40,176 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Reinitialize camera when app is resumed
+      if (_isDisposed) {
+        _initializeCamera();
+        _isDisposed = false;
+      }
+    }
+  }
+
+  @override
   void dispose() {
+    _isDisposed = true;
+    WidgetsBinding.instance.removeObserver(this);
+    poseDetector.close();
     super.dispose();
   }
 
-  //TODO capture image using camera
-  _imgFromCamera() async {
-    XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      _image = File(pickedFile.path);
-      doPoseDetection();
-      //
-      await poseDetectionMessage();
-    }
-  }
+  Future<void> _imgFromCamera() async {
+    if (_isProcessing || _isDisposed) return;
 
-  //TODO choose image using gallery
-  _imgFromGallery() async {
-    XFile? pickedFile = await imagePicker.pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedFile != null) {
-      _image = File(pickedFile.path);
-      doPoseDetection();
-      //
-      await poseDetectionMessage();
-    }
-  }
-
-  //TODO pose detection code here
-  doPoseDetection() async {
-    drawPose();
-    InputImage inputImage = InputImage.fromFile(_image!);
-    poses = await poseDetector.processImage(inputImage);
-    setState(() {
-      poses;
-    });
-
-    for (Pose pose in poses) {
-      // to access all landmarks
-      pose.landmarks.forEach((_, landmark) {
-        final type = landmark.type;
-        final x = landmark.x;
-        final y = landmark.y;
-        print(
-          "Landmark=>=>=>" +
-              landmark.type.name +
-              "  " +
-              landmark.x.toString() +
-              "  " +
-              landmark.y.toString(),
-        );
+    try {
+      setState(() {
+        _isProcessing = true;
       });
 
-      // to access specific landmarks
-      final landmark = pose.landmarks[PoseLandmarkType.nose];
+      // Release previous image resources
+      if (_image != null) {
+        _image = null;
+        image = null;
+        poses = [];
+        setState(() {});
+      }
+
+      final XFile? pickedFile = await imagePicker.pickImage(
+        source: ImageSource.camera,
+        preferredCameraDevice: CameraDevice.rear,
+        imageQuality: 100,
+        maxWidth: 1024,
+        maxHeight: 1024,
+      );
+
+      if (pickedFile != null && !_isDisposed) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+
+        await doPoseDetection();
+        if (!_isDisposed) {
+          await poseDetectionMessage();
+        }
+      }
+    } catch (e) {
+      if (!_isDisposed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error accessing camera: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } finally {
+      if (!_isDisposed) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
     }
   }
 
-  drawPose() async {
-    var bytes = await _image!.readAsBytes();
-    image = await decodeImageFromList(bytes);
-    setState(() {
-      image;
-    });
+  Future<void> _imgFromGallery() async {
+    if (_isProcessing || _isDisposed) return;
+
+    try {
+      setState(() {
+        _isProcessing = true;
+      });
+
+      // Release previous image resources
+      if (_image != null) {
+        _image = null;
+        image = null;
+        poses = [];
+        setState(() {});
+      }
+
+      final XFile? pickedFile = await imagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 100,
+        maxWidth: 1024,
+        maxHeight: 1024,
+      );
+
+      if (pickedFile != null && !_isDisposed) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+
+        await doPoseDetection();
+        if (!_isDisposed) {
+          await poseDetectionMessage();
+        }
+      }
+    } catch (e) {
+      if (!_isDisposed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error accessing gallery: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } finally {
+      if (!_isDisposed) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
+    }
+  }
+
+  Future<void> doPoseDetection() async {
+    if (_image == null || _isDisposed) return;
+
+    try {
+      await drawPose();
+      if (_isDisposed) return;
+
+      InputImage inputImage = InputImage.fromFile(_image!);
+      poses = await poseDetector.processImage(inputImage);
+      if (!_isDisposed) {
+        setState(() {});
+      }
+    } catch (e) {
+      if (!_isDisposed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error processing image: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> drawPose() async {
+    if (_image == null || _isDisposed) return;
+
+    try {
+      var bytes = await _image!.readAsBytes();
+      if (_isDisposed) return;
+
+      image = await decodeImageFromList(bytes);
+      if (!_isDisposed) {
+        setState(() {});
+      }
+    } catch (e) {
+      if (!_isDisposed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error drawing pose: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
   }
 
   Future<void> poseDetectionMessage() async {
