@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker_test/modul/bmi_calculator/bmi_calculator.dart';
+import 'package:image_picker_test/modul/food_chart/food_chart_screen.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_listing_screen.dart';
 import 'package:image_picker_test/modul/yoga_pose_detection/yoga_pose_detection.dart';
 
@@ -150,6 +151,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => BmiCalculator()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.calculate, color: Colors.black),
+              title: const Text('Food Chart'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FoodChartScreen(),
+                  ),
                 );
               },
             ),
@@ -360,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BmiCalculator(),
+                          builder: (context) => const FoodChartScreen(),
                         ),
                       );
                     },
