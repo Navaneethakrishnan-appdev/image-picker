@@ -231,7 +231,14 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _isLoading ? null : _signIn,
+                  onPressed:() {
+                     FocusScope.of(context).unfocus();
+                    if (_isLoading) {
+                      return;
+                    }
+                    _signIn();
+                   
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff129990),
                     padding: const EdgeInsets.symmetric(vertical: 15),

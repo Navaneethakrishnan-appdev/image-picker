@@ -41,7 +41,7 @@ class _ScoreScreenState extends State<ScoreScreen> {
     setBmiInterpretation();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff7C4585),
+        backgroundColor: Color(0xff9f86c0),
         title: Text(
           'BMI Score',
           style: GoogleFonts.outfit(
@@ -73,7 +73,7 @@ class _ScoreScreenState extends State<ScoreScreen> {
                   'Your Score',
                   style: GoogleFonts.outfit(
                     fontSize: 30,
-                    color: Color(0xff7C4585),
+                    color: Color(0xff9f86c0),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -92,7 +92,7 @@ class _ScoreScreenState extends State<ScoreScreen> {
                     style: GoogleFonts.outfit(fontSize: 40),
                   ),
                   currentValue: widget.bmiScore.toDouble(),
-                  needleColor: Color(0xff7C4585),
+                  needleColor: Color(0xff9f86c0),
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -116,7 +116,7 @@ class _ScoreScreenState extends State<ScoreScreen> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xff7C4585),
+                        backgroundColor: Color(0xff9f86c0),
                       ),
                       child: Text(
                         'Re-calculate',
@@ -131,7 +131,7 @@ class _ScoreScreenState extends State<ScoreScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xff7C4585),
+                        backgroundColor: Color(0xff9f86c0),
                       ),
                       child: Text(
                         'Share',

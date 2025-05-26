@@ -42,7 +42,7 @@ class _AgeWeightWidgetState extends State<AgeWeightWidget> {
           children: [
             Text(
               widget.title,
-              style: GoogleFonts.outfit(fontSize: 20, color: Color(0xff7C4585)),
+              style: GoogleFonts.outfit(fontSize: 20, color: Color(0xff9f86c0)),
             ),
             SizedBox(height: 10),
             Padding(
@@ -63,7 +63,7 @@ class _AgeWeightWidgetState extends State<AgeWeightWidget> {
                       width: 45,
                       child: CircleAvatar(
                         radius: 12,
-                        backgroundColor: Color(0xff7C4585),
+                        backgroundColor: Color(0xff9f86c0),
                         child: Icon(Icons.remove, color: Colors.white),
                       ),
                     ),
@@ -92,7 +92,7 @@ class _AgeWeightWidgetState extends State<AgeWeightWidget> {
                       width: 45,
                       child: CircleAvatar(
                         radius: 12,
-                        backgroundColor: Color(0xff7C4585),
+                        backgroundColor: Color(0xff9f86c0),
                         child: Icon(Icons.add, color: Colors.white),
                       ),
                     ),

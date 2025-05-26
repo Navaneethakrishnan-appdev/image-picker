@@ -3,10 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker_test/modul/bmi_calculator/bmi_calculator.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_listing_screen.dart';
 import 'package:image_picker_test/modul/yoga_pose_detection/yoga_pose_detection.dart';
+
+import 'profile_page.dart';
 import 'services/auth_service.dart';
 import 'signin_page.dart';
-import 'profile_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -87,43 +87,39 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
-                backgroundImage: userPhotoUrl != null
-                    ? NetworkImage(userPhotoUrl!)
-                    : null,
-                child: userPhotoUrl == null
-                    ? Icon(
-                        Icons.person,
-                        size: 40,
-                        color: const Color(0xff129990),
-                      )
-                    : null,
+                backgroundImage:
+                    userPhotoUrl != null ? NetworkImage(userPhotoUrl!) : null,
+                child:
+                    userPhotoUrl == null
+                        ? Icon(
+                          Icons.person,
+                          size: 40,
+                          color: const Color(0xff129990),
+                        )
+                        : null,
               ),
-              decoration: const BoxDecoration(
-                color: Color(0xff129990),
-              ),
+              decoration: const BoxDecoration(color: Color(0xff129990)),
             ),
             ListTile(
-              leading: const Icon(Icons.home,color: Colors.black,),
+              leading: const Icon(Icons.home, color: Colors.black),
               title: const Text('Home'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.person,color: Colors.black,),
+              leading: const Icon(Icons.person, color: Colors.black),
               title: const Text('Profile'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProfilePage(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
                 );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.fitness_center,color: Colors.black),
+              leading: const Icon(Icons.fitness_center, color: Colors.black),
               title: const Text('Exercises'),
               onTap: () {
                 Navigator.pop(context);
@@ -136,34 +132,30 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.self_improvement,color: Colors.black),
+              leading: const Icon(Icons.self_improvement, color: Colors.black),
               title: const Text('Yoga Pose Detection'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => YogaPoseDetection(),
-                  ),
+                  MaterialPageRoute(builder: (context) => YogaPoseDetection()),
                 );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.calculate,color: Colors.black),
+              leading: const Icon(Icons.calculate, color: Colors.black),
               title: const Text('BMI Calculator'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => BmiCalculator(),
-                  ),
+                  MaterialPageRoute(builder: (context) => BmiCalculator()),
                 );
               },
             ),
             const Divider(),
             ListTile(
-              leading: const Icon(Icons.logout,color: Colors.black),
+              leading: const Icon(Icons.logout, color: Colors.black),
               title: const Text('Sign Out'),
               onTap: _signOut,
             ),
@@ -304,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                         color: Color(0xffAA60C8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.black, width: 1),
+                        border: Border.all(color: Colors.white, width: 1),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
@@ -383,9 +375,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       padding: EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                        color: Color(0xfffee6c0),
+                        color: Color(0xff9f86c0),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Color(0xfffc2c00), width: 1),
+                        border: Border.all(color: Colors.white, width: 1),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
@@ -402,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Text(
                               'BMI Calculator:',
                               style: GoogleFonts.outfit(
-                                color: Color(0xfffc2c00),
+                                color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                               ),

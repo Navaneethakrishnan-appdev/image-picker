@@ -51,7 +51,7 @@ class _LevelSelectionPageState extends State<LevelSelectionPage> {
                 level.isCompleted
                     ? Color(0xffCAE8BD)
                     // ? Colors.green.withOpacity(0.1)
-                    : Color(0xffF4E7E1),
+                    : Colors.white,
             elevation: 5,
             child: ListTile(
               leading: CircleAvatar(

@@ -46,7 +46,7 @@ class _BmiCalculatorState extends State<BmiCalculator> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Color(0xff7C4585),
+        backgroundColor: Color(0xff9f86c0),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -125,10 +125,10 @@ class _BmiCalculatorState extends State<BmiCalculator> {
                         });
                       });
                     },
-                    activeColor: Color(0xff7C4585),
+                    activeColor: Color(0xff9f86c0),
                     buttonWidget: Icon(
                       Icons.arrow_forward_ios_rounded,
-                      color: Color(0xff7C4585),
+                      color: Color(0xff9f86c0),
                     ),
                     buttonText: 'CALCULATE',
                     buttontextstyle: GoogleFonts.outfit(

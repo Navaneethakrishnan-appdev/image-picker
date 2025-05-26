@@ -23,7 +23,7 @@ class _HeightWidgetState extends State<HeightWidget> {
           children: [
             Text(
               'Height',
-              style: GoogleFonts.outfit(fontSize: 25, color: Color(0xff7C4585)),
+              style: GoogleFonts.outfit(fontSize: 25, color: Color(0xff9f86c0)),
             ),
             SizedBox(height: 5),
             Row(
@@ -38,7 +38,7 @@ class _HeightWidgetState extends State<HeightWidget> {
                   'cm',
                   style: GoogleFonts.outfit(
                     fontSize: 20,
-                    color: Color(0xff7C4585),
+                    color: Color(0xff9f86c0),
                   ),
                 ),
               ],
@@ -47,7 +47,7 @@ class _HeightWidgetState extends State<HeightWidget> {
               min: 0,
               max: 250,
               value: _height.toDouble(),
-              thumbColor: Color(0xff7C4585),
+              thumbColor: Color(0xff9f86c0),
               onChanged: (value) {
                 setState(() {
                   _height = value.toInt();
