@@ -147,6 +147,58 @@ class _FoodChartScreenState extends State<FoodChartScreen> {
         ],
       },
     ],
+    'Yoga Diet': [
+      {
+        'meal': 'Early Morning (6:00 AM - 7:00 AM)',
+        'description': 'Light, energizing breakfast before morning yoga',
+        'foods': [
+          {'name': 'Warm Lemon Water', 'calories': '5 kcal', 'protein': '0g', 'portion': '1 glass with 1/2 lemon'},
+          {'name': 'Banana with Almonds', 'calories': '150 kcal', 'protein': '4g', 'portion': '1 banana + 10 almonds'},
+          {'name': 'Overnight Chia Pudding', 'calories': '180 kcal', 'protein': '6g', 'portion': '2 tbsp chia seeds + almond milk'},
+        ],
+      },
+      {
+        'meal': 'Post-Yoga Breakfast (8:30 AM - 9:30 AM)',
+        'description': 'Nourishing meal after yoga practice',
+        'foods': [
+          {'name': 'Fruit Smoothie Bowl', 'calories': '250 kcal', 'protein': '8g', 'portion': 'Mixed fruits + yogurt + granola'},
+          {'name': 'Avocado Toast', 'calories': '220 kcal', 'protein': '6g', 'portion': 'Whole grain toast + 1/2 avocado'},
+          {'name': 'Quinoa Porridge', 'calories': '200 kcal', 'protein': '7g', 'portion': '1/2 cup quinoa + fruits + nuts'},
+        ],
+      },
+      {
+        'meal': 'Mid-Morning Snack (11:00 AM - 12:00 PM)',
+        'description': 'Light, energizing snack',
+        'foods': [
+          {'name': 'Fresh Fruit Salad', 'calories': '120 kcal', 'protein': '2g', 'portion': 'Mixed seasonal fruits'},
+          {'name': 'Coconut Water', 'calories': '45 kcal', 'protein': '0g', 'portion': '1 glass'},
+        ],
+      },
+      {
+        'meal': 'Lunch (1:00 PM - 2:00 PM)',
+        'description': 'Balanced, sattvic meal',
+        'foods': [
+          {'name': 'Vegetable Khichdi', 'calories': '300 kcal', 'protein': '10g', 'portion': 'Rice + lentils + vegetables'},
+          {'name': 'Mediterranean Bowl', 'calories': '350 kcal', 'protein': '12g', 'portion': 'Quinoa + vegetables + hummus'},
+        ],
+      },
+      {
+        'meal': 'Afternoon Snack (4:00 PM - 5:00 PM)',
+        'description': 'Pre-evening yoga snack',
+        'foods': [
+          {'name': 'Herbal Tea with Dates', 'calories': '100 kcal', 'protein': '1g', 'portion': '1 cup tea + 2 dates'},
+          {'name': 'Sprouted Mung Beans', 'calories': '80 kcal', 'protein': '6g', 'portion': '1/2 cup sprouts'},
+        ],
+      },
+      {
+        'meal': 'Dinner (7:00 PM - 8:00 PM)',
+        'description': 'Light, early dinner',
+        'foods': [
+          {'name': 'Vegetable Soup', 'calories': '200 kcal', 'protein': '8g', 'portion': '2 cups soup with vegetables'},
+          {'name': 'Steamed Vegetables with Tofu', 'calories': '250 kcal', 'protein': '15g', 'portion': 'Mixed vegetables + 4 oz tofu'},
+        ],
+      },
+    ],
   };
 
   static IconData getFoodIcon(String foodName) {
@@ -191,6 +243,8 @@ class _FoodChartScreenState extends State<FoodChartScreen> {
         return Icons.fitness_center;
       case 'Maintenance':
         return Icons.balance;
+      case 'Yoga Diet':
+        return Icons.self_improvement;
       default:
         return Icons.fitness_center;
     }
@@ -204,6 +258,8 @@ class _FoodChartScreenState extends State<FoodChartScreen> {
         return 'High protein diet for muscle building';
       case 'Maintenance':
         return 'Balanced diet for weight maintenance';
+      case 'Yoga Diet':
+        return 'Sattvic diet for yoga practitioners';
       default:
         return '';
     }
@@ -292,7 +348,7 @@ class _FoodChartScreenState extends State<FoodChartScreen> {
                     ),
                   ),
                   selectedItemBuilder: (BuildContext context) {
-                    return ['Weight Loss', 'Muscle Gain', 'Maintenance'].map((String value) {
+                    return ['Weight Loss', 'Muscle Gain', 'Maintenance', 'Yoga Diet'].map((String value) {
                       return Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -307,7 +363,7 @@ class _FoodChartScreenState extends State<FoodChartScreen> {
                       );
                     }).toList();
                   },
-                  items: ['Weight Loss', 'Muscle Gain', 'Maintenance']
+                  items: ['Weight Loss', 'Muscle Gain', 'Maintenance', 'Yoga Diet']
                       .map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,

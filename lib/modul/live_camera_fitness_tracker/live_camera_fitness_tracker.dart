@@ -10,6 +10,7 @@ import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:image_picker_test/main.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_data_model.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/level_selection_page.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class LiveCameraFitnessTracker extends StatefulWidget {
   final ExerciseDataModel exerciseDataModel;
@@ -42,6 +43,7 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
 
   //TODO declare detector
   late PoseDetector poseDetector;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -49,6 +51,21 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
     initializeCamera();
     _timeLeft = widget.selectedLevel.durationInSeconds;
     startTimer();
+    _initializeAudio();
+  }
+
+  Future<void> _initializeAudio() async {
+    await _audioPlayer.setSource(AssetSource('sounds/success1.mp3'));
+  }
+
+  Future<void> _playSuccessSound() async {
+    await _audioPlayer.setSource(AssetSource('sounds/success1.mp3'));
+    await _audioPlayer.resume();
+  }
+
+  Future<void> _playFailureSound() async {
+    await _audioPlayer.setSource(AssetSource('sounds/failure1.mp3'));
+    await _audioPlayer.resume();
   }
 
   void startTimer() {
@@ -72,6 +89,9 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
     });
 
     if (_currentCount >= widget.selectedLevel.targetCount) {
+      // Play success sound
+      await _playSuccessSound();
+      
       // Mark current level as completed
       setState(() {
         widget.selectedLevel.markAsCompleted();
@@ -152,6 +172,9 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
             ),
       );
     } else {
+      // Play failure sound
+      await _playFailureSound();
+      
       // Show failure dialog
       showDialog(
         context: context,
@@ -305,6 +328,7 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
     _timer.cancel();
     controller?.dispose();
     poseDetector.close();
+    _audioPlayer.dispose();
     super.dispose();
   }
 

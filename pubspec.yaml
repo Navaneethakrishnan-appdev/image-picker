@@ -50,6 +50,7 @@ dependencies:
   google_sign_in: ^6.3.0
   cloud_firestore: ^5.6.8
   firebase_storage: ^12.4.6
+  audioplayers: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +78,7 @@ flutter:
   assets:
      - assets/images/
      - assets/gif/
+     - assets/sounds/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
