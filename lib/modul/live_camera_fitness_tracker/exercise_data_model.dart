@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-enum ExerciseType { pushUps, squats, downwardDogPlank, jumpingJack, highKnees }
+enum ExerciseType { pushUps, squats, downwardDogPlank, jumpingJack, highKnees, birdDog,  }
 
 class ExerciseLevel {
   final int levelNumber;
@@ -232,6 +232,22 @@ class ExerciseDataModel {
           ),
         ];
       case ExerciseType.highKnees:
+        return [
+          ExerciseLevel(levelNumber: 1, durationInSeconds: 45, targetCount: 5),
+          ExerciseLevel(levelNumber: 2, durationInSeconds: 60, targetCount: 10),
+          ExerciseLevel(levelNumber: 3, durationInSeconds: 90, targetCount: 15),
+          ExerciseLevel(
+            levelNumber: 4,
+            durationInSeconds: 120,
+            targetCount: 20,
+          ),
+          ExerciseLevel(
+            levelNumber: 5,
+            durationInSeconds: 150,
+            targetCount: 25,
+          ),
+        ];
+      case ExerciseType.birdDog:
         return [
           ExerciseLevel(levelNumber: 1, durationInSeconds: 45, targetCount: 5),
           ExerciseLevel(levelNumber: 2, durationInSeconds: 60, targetCount: 10),

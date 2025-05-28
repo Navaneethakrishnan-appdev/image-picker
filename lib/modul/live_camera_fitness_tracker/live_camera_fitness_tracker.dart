@@ -55,11 +55,11 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
   }
 
   Future<void> _initializeAudio() async {
-    await _audioPlayer.setSource(AssetSource('sounds/success1.mp3'));
+    await _audioPlayer.setSource(AssetSource('sounds/success2.mp3'));
   }
 
   Future<void> _playSuccessSound() async {
-    await _audioPlayer.setSource(AssetSource('sounds/success1.mp3'));
+    await _audioPlayer.setSource(AssetSource('sounds/success2.mp3'));
     await _audioPlayer.resume();
   }
 
@@ -313,6 +313,8 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
           detectPlankToDownwardDog(poses.first);
         } else if (widget.exerciseDataModel.type == ExerciseType.jumpingJack) {
           detectJumpingJack(poses.first);
+        } else if (widget.exerciseDataModel.type == ExerciseType.birdDog) {
+          detectBirdDog(poses.first.landmarks);
         } else if (widget.exerciseDataModel.type == ExerciseType.highKnees) {
           detectHighKnees(poses.first.landmarks);
         }
@@ -681,7 +683,58 @@ class _LiveCameraFitnessTrackerState extends State<LiveCameraFitnessTracker> {
     }
   }
 
-  int highKneeCount = 0;
+  int birdDogCount = 0;
+  bool isExtended = false;
+
+  void detectBirdDog(Map<PoseLandmarkType, PoseLandmark> landmarks) {
+    final leftWrist = landmarks[PoseLandmarkType.leftWrist];
+    final rightWrist = landmarks[PoseLandmarkType.rightWrist];
+    final leftShoulder = landmarks[PoseLandmarkType.leftShoulder];
+    final rightShoulder = landmarks[PoseLandmarkType.rightShoulder];
+    final leftHip = landmarks[PoseLandmarkType.leftHip];
+    final rightHip = landmarks[PoseLandmarkType.rightHip];
+    final leftAnkle = landmarks[PoseLandmarkType.leftAnkle];
+    final rightAnkle = landmarks[PoseLandmarkType.rightAnkle];
+    final leftElbow = landmarks[PoseLandmarkType.leftElbow];
+    final rightElbow = landmarks[PoseLandmarkType.rightElbow];
+    final leftKnee = landmarks[PoseLandmarkType.leftKnee];
+    final rightKnee = landmarks[PoseLandmarkType.rightKnee];
+
+    if (leftWrist == null || rightWrist == null ||
+        leftShoulder == null || rightShoulder == null ||
+        leftHip == null || rightHip == null ||
+        leftAnkle == null || rightAnkle == null ||
+        leftElbow == null || rightElbow == null ||
+        leftKnee == null || rightKnee == null) {
+      return;
+    }
+
+    // Check if right arm and left leg are extended
+    final rightArmAngle = calculateAngle(rightShoulder, rightElbow, rightWrist);
+    final leftLegAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
+
+    // Check if left arm and right leg are extended
+    final leftArmAngle = calculateAngle(leftShoulder, leftElbow, leftWrist);
+    final rightLegAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
+
+    bool rightArmLeftLegExtended = (rightArmAngle > 150 && leftLegAngle > 160);
+    bool leftArmRightLegExtended = (leftArmAngle > 150 && rightLegAngle > 160);
+
+    // If extended
+    if ((rightArmLeftLegExtended || leftArmRightLegExtended) && !isExtended) {
+      isExtended = true;
+    }
+
+    // If returned to hands-and-knees (arm and leg angles < ~100 degrees)
+    if (!rightArmLeftLegExtended && !leftArmRightLegExtended && isExtended) {
+      setState(() {
+        _currentCount++;
+      });
+      isExtended = false;
+    }
+  }
+
+   int highKneeCount = 0;
   bool isLeftKneeUp = false;
   bool isRightKneeUp = false;
 

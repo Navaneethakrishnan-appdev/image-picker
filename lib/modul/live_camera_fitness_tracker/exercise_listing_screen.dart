@@ -56,6 +56,17 @@ class _ExerciseListingScreenState extends State<ExerciseListingScreen> {
       ),
     );
 
+    exerciseList.add(
+      ExerciseDataModel(
+        "Bird Dog",
+        "bird-dog.gif",
+        Color(0xff9B7EBD),
+        ExerciseType.birdDog,
+      ),
+    );
+
+
+
     setState(() {
       exerciseList;
     });
