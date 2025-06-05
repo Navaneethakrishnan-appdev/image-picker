@@ -156,7 +156,9 @@ class _ChatPageState extends State<ChatPage> {
                           decoration: BoxDecoration(
                             color: message.isUser
                                 ? const Color(0xff129990)
-                                : const Color(0xff9B7EBD),
+                                : message.text.toLowerCase().contains('i can only help with yoga and fitness')
+                                    ? const Color(0xFFFFE5E5) // Light red for off-topic responses
+                                    : const Color(0xff9B7EBD),
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
@@ -170,7 +172,11 @@ class _ChatPageState extends State<ChatPage> {
                           child: Text(
                             message.text,
                             style: GoogleFonts.outfit(
-                              color: Colors.white,
+                              color: message.isUser
+                                  ? Colors.white
+                                  : message.text.toLowerCase().contains('i can only help with yoga and fitness')
+                                      ? Colors.red[700] // Dark red text for off-topic responses
+                                      : Colors.white,
                               fontSize: 16,
                             ),
                           ),

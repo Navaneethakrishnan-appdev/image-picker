@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_data_model.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/level_selection_page.dart';
+import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_calendar_screen.dart';
 
 class ExerciseListingScreen extends StatefulWidget {
   const ExerciseListingScreen({super.key});
@@ -72,6 +73,15 @@ class _ExerciseListingScreenState extends State<ExerciseListingScreen> {
     });
   }
 
+  void _navigateToCalendar() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExerciseCalendarScreen(),
+      ),
+    );
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -99,6 +109,13 @@ class _ExerciseListingScreenState extends State<ExerciseListingScreen> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.calendar_today, color: Colors.white),
+            onPressed: _navigateToCalendar,
+          ),
+          SizedBox(width: 10),
+        ],
       ),
       body: Container(
         child: ListView.builder(
