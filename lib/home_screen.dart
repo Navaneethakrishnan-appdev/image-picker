@@ -4,6 +4,7 @@ import 'package:image_picker_test/modul/bmi_calculator/bmi_calculator.dart';
 import 'package:image_picker_test/modul/food_chart/food_chart_screen.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_listing_screen.dart';
 import 'package:image_picker_test/modul/yoga_pose_detection/yoga_pose_detection.dart';
+import 'package:image_picker_test/chat_page.dart';
 
 import 'profile_page.dart';
 import 'services/auth_service.dart';
@@ -65,6 +66,40 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         centerTitle: true,
+      ),
+      floatingActionButton: Container(
+        margin: EdgeInsets.only(bottom: 40, right: 20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xff129990), Color(0xff9B7EBD)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChatPage()),
+            );
+          },
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: const Icon(
+            Icons.auto_awesome,
+            color: Colors.white,
+            size: 28,
+          ),
+        ),
       ),
       drawer: Drawer(
         child: ListView(
