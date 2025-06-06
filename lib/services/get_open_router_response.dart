@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 
 Future<String> getOpenRouterResponse(String userInput) async {
   const url = 'https://openrouter.ai/api/v1/chat/completions';
-  const apiKey = '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';
+  const apiKey =
+      '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';
 
   final headers = {
     'Authorization': 'Bearer $apiKey',
@@ -14,11 +15,12 @@ Future<String> getOpenRouterResponse(String userInput) async {
   };
 
   final body = jsonEncode({
-    "model": "openai/gpt-3.5-turbo",
+    "model": "openai/gpt-4o-mini",
     "messages": [
       {
         "role": "system",
-        "content": "You are a yoga and fitness assistant. You should ONLY answer questions related to yoga, fitness, exercise, health, and wellness. If asked about any other topics, politely respond that you can only help with yoga and fitness related questions. Keep your responses concise and focused on practical advice."
+        "content":
+            "You are a yoga and fitness assistant. You should ONLY answer questions related to yoga, fitness, food, exercise, health, and wellness. If asked about any other topics, politely respond that you can only help with yoga and fitness related questions. Keep your responses concise and focused on practical advice."
       },
       {"role": "user", "content": userInput},
     ],
@@ -45,7 +47,8 @@ Future<String> getOpenRouterResponse(String userInput) async {
       }
     } else {
       final errorData = jsonDecode(response.body);
-      final errorMessage = errorData['error']?['message'] ?? 'Unknown error occurred';
+      final errorMessage =
+          errorData['error']?['message'] ?? 'Unknown error occurred';
       throw Exception('API Error: $errorMessage');
     }
   } catch (e) {
