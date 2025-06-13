@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker_test/gemini_ai_assistant.dart';
 import 'package:image_picker_test/modul/bmi_calculator/bmi_calculator.dart';
 import 'package:image_picker_test/modul/food_chart/food_chart_screen.dart';
 import 'package:image_picker_test/modul/live_camera_fitness_tracker/exercise_listing_screen.dart';
 import 'package:image_picker_test/modul/yoga_pose_detection/yoga_pose_detection.dart';
-import 'package:image_picker_test/chat_page.dart';
 
 import 'profile_page.dart';
 import 'services/auth_service.dart';
@@ -89,7 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ChatPage()),
+              MaterialPageRoute(
+                  builder: (context) => const GeminiAiAssistant()),
             );
           },
           backgroundColor: Colors.transparent,
@@ -125,14 +126,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 backgroundColor: Colors.white,
                 backgroundImage:
                     userPhotoUrl != null ? NetworkImage(userPhotoUrl!) : null,
-                child:
-                    userPhotoUrl == null
-                        ? Icon(
-                          Icons.person,
-                          size: 40,
-                          color: const Color(0xff129990),
-                        )
-                        : null,
+                child: userPhotoUrl == null
+                    ? Icon(
+                        Icons.person,
+                        size: 40,
+                        color: const Color(0xff129990),
+                      )
+                    : null,
               ),
               decoration: const BoxDecoration(color: Color(0xff129990)),
             ),

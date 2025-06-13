@@ -1,14 +1,18 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'splash_screen.dart';
 
+
 late List<CameraDescription> cameras;
+const apiKey = 'AIzaSyDxgcw2ZJ8Agg1X2OBlAsb8KccXdjK7HMo';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   cameras = await availableCameras();
-
+  Gemini.init(apiKey: apiKey);
   runApp(const MyApp());
 }
 
