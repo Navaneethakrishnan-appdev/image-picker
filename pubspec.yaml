@@ -56,6 +56,12 @@ dependencies:
   table_calendar: ^3.0.9
   dash_chat_2: ^0.0.21
   flutter_gemini: ^3.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+    android: true
+    ios: true
+    image_path: "assets/images/app-logo.jpeg"
 
 dev_dependencies:
   flutter_test:

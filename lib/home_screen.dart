@@ -235,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text(
                         'Yoga Pose Detector:',
                         style: GoogleFonts.outfit(
-                          fontSize: 20,
+                          fontSize: MediaQuery.of(context).size.width * 0.05,
                           color: Color(0xff129990),
                           fontWeight: FontWeight.w600,
                         ),
@@ -252,8 +252,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Container(
-                      height: 150,
-                      width: 350,
+                      height: MediaQuery.of(context).size.height * 0.18,
+                      width: MediaQuery.of(context).size.width * 0.9,
                       margin: EdgeInsets.only(
                         right: 15,
                         left: 15,
@@ -282,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Yoga Pose Detector',
                               style: GoogleFonts.outfit(
                                 color: Color(0xff9B7EBD),
-                                fontSize: 18,
+                                fontSize: MediaQuery.of(context).size.width * 0.045,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -290,8 +290,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: SizedBox(
-                              height: 100,
-                              width: 150,
+                              height: MediaQuery.of(context).size.height * 0.12,
+                              width: MediaQuery.of(context).size.width * 0.35,
                               child: Image(
                                 image: AssetImage(
                                   'assets/images/home_yogapose.png',
@@ -316,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text(
                         'AI Exercises:',
                         style: GoogleFonts.outfit(
-                          fontSize: 20,
+                          fontSize: MediaQuery.of(context).size.width * 0.05,
                           color: Color(0xff129990),
                           fontWeight: FontWeight.w600,
                         ),
@@ -333,8 +333,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Container(
-                      height: 150,
-                      width: 350,
+                      height: MediaQuery.of(context).size.height * 0.18,
+                      width: MediaQuery.of(context).size.width * 0.9,
                       margin: EdgeInsets.only(
                         right: 15,
                         left: 15,
@@ -363,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'AI Exercises',
                               style: GoogleFonts.outfit(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: MediaQuery.of(context).size.width * 0.045,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -371,8 +371,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: SizedBox(
-                              height: 150,
-                              width: 150,
+                              height: MediaQuery.of(context).size.height * 0.12,
+                              width: MediaQuery.of(context).size.width * 0.35,
                               child: Image(
                                 image: AssetImage(
                                   'assets/images/home_exercises_pose1.png',
@@ -397,7 +397,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text(
                         'Food Chart:',
                         style: GoogleFonts.outfit(
-                          fontSize: 20,
+                          fontSize: MediaQuery.of(context).size.width * 0.05,
                           color: Color(0xff129990),
                           fontWeight: FontWeight.w600,
                         ),
@@ -414,8 +414,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Container(
-                      height: 150,
-                      width: 350,
+                      height: MediaQuery.of(context).size.height * 0.18,
+                      width: MediaQuery.of(context).size.width * 0.9,
                       margin: EdgeInsets.only(
                         right: 15,
                         left: 15,
@@ -444,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Food Chart',
                               style: GoogleFonts.outfit(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: MediaQuery.of(context).size.width * 0.045,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -452,8 +452,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: SizedBox(
-                              height: 150,
-                              width: 150,
+                              height: MediaQuery.of(context).size.height * 0.12,
+                              width: MediaQuery.of(context).size.width * 0.35,
                               child: Image(
                                 image: AssetImage(
                                   'assets/images/home_food_chart1.png',
@@ -478,7 +478,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text(
                         'BMI Calculator:',
                         style: GoogleFonts.outfit(
-                          fontSize: 20,
+                          fontSize: MediaQuery.of(context).size.width * 0.05,
                           color: Color(0xff129990),
                           fontWeight: FontWeight.w600,
                         ),
@@ -495,8 +495,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Container(
-                      height: 150,
-                      width: 350,
+                      height: MediaQuery.of(context).size.height * 0.18,
+                      width: MediaQuery.of(context).size.width * 0.9,
                       margin: EdgeInsets.only(
                         right: 15,
                         left: 15,
@@ -525,7 +525,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'BMI Calculator:',
                               style: GoogleFonts.outfit(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: MediaQuery.of(context).size.width * 0.045,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -533,8 +533,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: SizedBox(
-                              height: 150,
-                              width: 150,
+                              height: MediaQuery.of(context).size.height * 0.12,
+                              width: MediaQuery.of(context).size.width * 0.35,
                               child: Image(
                                 image: AssetImage('assets/images/home_bmi.png'),
                                 fit: BoxFit.cover,
