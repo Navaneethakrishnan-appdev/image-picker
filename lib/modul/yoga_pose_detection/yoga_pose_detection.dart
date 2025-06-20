@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/services.dart';
 
 class YogaPoseDetection extends StatefulWidget {
   const YogaPoseDetection({super.key});
@@ -107,7 +106,8 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
       if (pickedFile != null && !_isDisposed) {
         // Validate image size
         final fileSize = await pickedFile.length();
-        if (fileSize > 5 * 1024 * 1024) { // 5MB limit
+        if (fileSize > 5 * 1024 * 1024) {
+          // 5MB limit
           throw Exception('Image too large');
         }
 
@@ -122,10 +122,10 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
             try {
               // First draw the pose
               await drawPose();
-              
+
               // Then do pose detection
               await doPoseDetection();
-              
+
               // Finally show the message
               await poseDetectionMessage();
             } catch (e) {
@@ -218,7 +218,7 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
     try {
       InputImage inputImage = InputImage.fromFile(_image!);
       final detectedPoses = await poseDetector.processImage(inputImage);
-      
+
       if (!_isDisposed) {
         setState(() {
           poses = detectedPoses;
@@ -237,7 +237,7 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
     try {
       final bytes = await _image!.readAsBytes();
       final decodedImage = await decodeImageFromList(bytes);
-      
+
       if (!_isDisposed) {
         setState(() {
           image = decodedImage;
@@ -253,13 +253,14 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
   Future<void> poseDetectionMessage() async {
     if (poses.isEmpty) {
       setState(() {
-        poseMessage = 'No pose detected. Please ensure good lighting and clear view.';
+        poseMessage =
+            'No pose detected. Please ensure good lighting and clear view.';
       });
       return;
     }
 
     final pose = poses[0];
-    
+
     // Check pose detection confidence
     if (!_isPoseConfident(pose)) {
       setState(() {
@@ -275,41 +276,61 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
     // Use dynamic thresholds for pose detection
     bool oneLegUp = _checkOneLegUp(pose.landmarks, thresholds);
     bool handsTogetherAboveHead =
-        (pose.landmarks[PoseLandmarkType.leftWrist]!.x - pose.landmarks[PoseLandmarkType.rightWrist]!.x).abs() < 40;
+        (pose.landmarks[PoseLandmarkType.leftWrist]!.x -
+                    pose.landmarks[PoseLandmarkType.rightWrist]!.x)
+                .abs() <
+            40;
     String message = 'Unknown Pose or Form Improper';
 
     if (oneLegUp) {
-      message =
-          handsTogetherAboveHead
-              ? 'Vrksasana (Tree Pose): Proper Form'
-              : 'Vrksasana (Tree Pose): Improper Form – Hands not together above head';
+      message = handsTogetherAboveHead
+          ? 'Vrksasana (Tree Pose): Proper Form'
+          : 'Vrksasana (Tree Pose): Improper Form – Hands not together above head';
     }
     // 🏔️ Tadasana (Mountain Pose)
-    else if (pose.landmarks[PoseLandmarkType.leftWrist]!.y > pose.landmarks[PoseLandmarkType.leftHip]!.y &&
-        pose.landmarks[PoseLandmarkType.rightWrist]!.y > pose.landmarks[PoseLandmarkType.rightHip]!.y &&
-        pose.landmarks[PoseLandmarkType.leftShoulder]!.y < pose.landmarks[PoseLandmarkType.leftHip]!.y &&
-        pose.landmarks[PoseLandmarkType.rightShoulder]!.y < pose.landmarks[PoseLandmarkType.rightHip]!.y) {
+    else if (pose.landmarks[PoseLandmarkType.leftWrist]!.y >
+            pose.landmarks[PoseLandmarkType.leftHip]!.y &&
+        pose.landmarks[PoseLandmarkType.rightWrist]!.y >
+            pose.landmarks[PoseLandmarkType.rightHip]!.y &&
+        pose.landmarks[PoseLandmarkType.leftShoulder]!.y <
+            pose.landmarks[PoseLandmarkType.leftHip]!.y &&
+        pose.landmarks[PoseLandmarkType.rightShoulder]!.y <
+            pose.landmarks[PoseLandmarkType.rightHip]!.y) {
       message = 'Tadasana (Mountain Pose): Proper Form';
     }
     // ⚔️ Virabhadrasana II (Warrior II)
-    else if (_isArmHorizontal(pose.landmarks[PoseLandmarkType.leftShoulder]!, pose.landmarks[PoseLandmarkType.leftWrist]!, bodyHeight) &&
-        _isArmHorizontal(pose.landmarks[PoseLandmarkType.rightShoulder]!, pose.landmarks[PoseLandmarkType.rightWrist]!, bodyHeight)) {
-      message =
-          _legsApart(pose.landmarks[PoseLandmarkType.leftHip]!, pose.landmarks[PoseLandmarkType.rightHip]!, pose.landmarks[PoseLandmarkType.leftAnkle]!, pose.landmarks[PoseLandmarkType.rightAnkle]!)
-              ? 'Virabhadrasana II (Warrior II): Proper Form'
-              : 'Virabhadrasana II (Warrior II): Improper Form – Legs not wide enough';
+    else if (_isArmHorizontal(pose.landmarks[PoseLandmarkType.leftShoulder]!,
+            pose.landmarks[PoseLandmarkType.leftWrist]!, bodyHeight) &&
+        _isArmHorizontal(pose.landmarks[PoseLandmarkType.rightShoulder]!,
+            pose.landmarks[PoseLandmarkType.rightWrist]!, bodyHeight)) {
+      message = _legsApart(
+              pose.landmarks[PoseLandmarkType.leftHip]!,
+              pose.landmarks[PoseLandmarkType.rightHip]!,
+              pose.landmarks[PoseLandmarkType.leftAnkle]!,
+              pose.landmarks[PoseLandmarkType.rightAnkle]!)
+          ? 'Virabhadrasana II (Warrior II): Proper Form'
+          : 'Virabhadrasana II (Warrior II): Improper Form – Legs not wide enough';
     }
     // 🙌 Urdhva Hastasana (Raised Hands Pose)
-    else if (pose.landmarks[PoseLandmarkType.leftWrist]!.y < pose.landmarks[PoseLandmarkType.leftShoulder]!.y &&
-        pose.landmarks[PoseLandmarkType.rightWrist]!.y < pose.landmarks[PoseLandmarkType.rightShoulder]!.y &&
-        (pose.landmarks[PoseLandmarkType.leftWrist]!.x - pose.landmarks[PoseLandmarkType.rightWrist]!.x).abs() < 60) {
-      bool upright =
-          (pose.landmarks[PoseLandmarkType.leftShoulder]!.x - pose.landmarks[PoseLandmarkType.leftHip]!.x).abs() < 30 &&
-          (pose.landmarks[PoseLandmarkType.rightShoulder]!.x - pose.landmarks[PoseLandmarkType.rightHip]!.x).abs() < 30;
-      message =
-          upright
-              ? 'Urdhva Hastasana (Raised Hands Pose): Proper Form'
-              : 'Urdhva Hastasana (Raised Hands Pose): Improper Form – Keep body straight';
+    else if (pose.landmarks[PoseLandmarkType.leftWrist]!.y <
+            pose.landmarks[PoseLandmarkType.leftShoulder]!.y &&
+        pose.landmarks[PoseLandmarkType.rightWrist]!.y <
+            pose.landmarks[PoseLandmarkType.rightShoulder]!.y &&
+        (pose.landmarks[PoseLandmarkType.leftWrist]!.x -
+                    pose.landmarks[PoseLandmarkType.rightWrist]!.x)
+                .abs() <
+            60) {
+      bool upright = (pose.landmarks[PoseLandmarkType.leftShoulder]!.x -
+                      pose.landmarks[PoseLandmarkType.leftHip]!.x)
+                  .abs() <
+              30 &&
+          (pose.landmarks[PoseLandmarkType.rightShoulder]!.x -
+                      pose.landmarks[PoseLandmarkType.rightHip]!.x)
+                  .abs() <
+              30;
+      message = upright
+          ? 'Urdhva Hastasana (Raised Hands Pose): Proper Form'
+          : 'Urdhva Hastasana (Raised Hands Pose): Improper Form – Keep body straight';
     }
     // 🐶 Adho Mukha Svanasana (Downward-Facing Dog)
     else if (hipAboveHandsAndFeet(
@@ -323,15 +344,27 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
       message = 'Adho Mukha Svanasana (Downward Dog): Proper Form';
     }
     // 🔺 Trikonasana (Triangle Pose)
-    else if (_isArmVertical(pose.landmarks[PoseLandmarkType.leftShoulder]!, pose.landmarks[PoseLandmarkType.leftWrist]!) &&
-        _isArmVertical(pose.landmarks[PoseLandmarkType.rightShoulder]!, pose.landmarks[PoseLandmarkType.rightWrist]!) &&
-        _legsApart(pose.landmarks[PoseLandmarkType.leftHip]!, pose.landmarks[PoseLandmarkType.rightHip]!, pose.landmarks[PoseLandmarkType.leftAnkle]!, pose.landmarks[PoseLandmarkType.rightAnkle]!)) {
+    else if (_isArmVertical(pose.landmarks[PoseLandmarkType.leftShoulder]!,
+            pose.landmarks[PoseLandmarkType.leftWrist]!) &&
+        _isArmVertical(pose.landmarks[PoseLandmarkType.rightShoulder]!,
+            pose.landmarks[PoseLandmarkType.rightWrist]!) &&
+        _legsApart(
+            pose.landmarks[PoseLandmarkType.leftHip]!,
+            pose.landmarks[PoseLandmarkType.rightHip]!,
+            pose.landmarks[PoseLandmarkType.leftAnkle]!,
+            pose.landmarks[PoseLandmarkType.rightAnkle]!)) {
       message = 'Trikonasana (Triangle Pose): Proper Form';
     }
     // 🧘 Virabhadrasana I (Warrior I)
-    else if (_isArmRaised(pose.landmarks[PoseLandmarkType.leftWrist]!, pose.landmarks[PoseLandmarkType.leftShoulder]!) &&
-        _isArmRaised(pose.landmarks[PoseLandmarkType.rightWrist]!, pose.landmarks[PoseLandmarkType.rightShoulder]!) &&
-        _oneKneeBent(pose.landmarks[PoseLandmarkType.leftKnee]!, pose.landmarks[PoseLandmarkType.rightKnee]!, pose.landmarks[PoseLandmarkType.leftHip]!, pose.landmarks[PoseLandmarkType.rightHip]!)) {
+    else if (_isArmRaised(pose.landmarks[PoseLandmarkType.leftWrist]!,
+            pose.landmarks[PoseLandmarkType.leftShoulder]!) &&
+        _isArmRaised(pose.landmarks[PoseLandmarkType.rightWrist]!,
+            pose.landmarks[PoseLandmarkType.rightShoulder]!) &&
+        _oneKneeBent(
+            pose.landmarks[PoseLandmarkType.leftKnee]!,
+            pose.landmarks[PoseLandmarkType.rightKnee]!,
+            pose.landmarks[PoseLandmarkType.leftHip]!,
+            pose.landmarks[PoseLandmarkType.rightHip]!)) {
       message = 'Virabhadrasana I (Warrior I): Proper Form';
     }
     // 🐍 Bhujangasana (Cobra Pose)
@@ -341,25 +374,37 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
           pose.landmarks[PoseLandmarkType.leftHip]!,
           pose.landmarks[PoseLandmarkType.rightHip]!,
         ) &&
-        pose.landmarks[PoseLandmarkType.leftKnee]!.y > pose.landmarks[PoseLandmarkType.leftHip]!.y &&
-        pose.landmarks[PoseLandmarkType.rightKnee]!.y > pose.landmarks[PoseLandmarkType.rightHip]!.y) {
+        pose.landmarks[PoseLandmarkType.leftKnee]!.y >
+            pose.landmarks[PoseLandmarkType.leftHip]!.y &&
+        pose.landmarks[PoseLandmarkType.rightKnee]!.y >
+            pose.landmarks[PoseLandmarkType.rightHip]!.y) {
       message = 'Bhujangasana (Cobra Pose): Proper Form';
     }
     // 🙇 Balasana (Child Pose)
     else if (pose.landmarks[PoseLandmarkType.nose] != null &&
-        pose.landmarks[PoseLandmarkType.leftWrist]!.y > pose.landmarks[PoseLandmarkType.leftShoulder]!.y &&
-        pose.landmarks[PoseLandmarkType.rightWrist]!.y > pose.landmarks[PoseLandmarkType.rightShoulder]!.y &&
-        pose.landmarks[PoseLandmarkType.nose]!.y < pose.landmarks[PoseLandmarkType.leftHip]!.y &&
-        pose.landmarks[PoseLandmarkType.leftAnkle]!.y < pose.landmarks[PoseLandmarkType.leftHip]!.y) {
+        pose.landmarks[PoseLandmarkType.leftWrist]!.y >
+            pose.landmarks[PoseLandmarkType.leftShoulder]!.y &&
+        pose.landmarks[PoseLandmarkType.rightWrist]!.y >
+            pose.landmarks[PoseLandmarkType.rightShoulder]!.y &&
+        pose.landmarks[PoseLandmarkType.nose]!.y <
+            pose.landmarks[PoseLandmarkType.leftHip]!.y &&
+        pose.landmarks[PoseLandmarkType.leftAnkle]!.y <
+            pose.landmarks[PoseLandmarkType.leftHip]!.y) {
       message = 'Balasana (Child Pose): Proper Form';
     }
     // 🏋️‍♂️ Setu Bandhasana (Bridge Pose) - New Pose
-    else if (pose.landmarks[PoseLandmarkType.leftHip]!.y > pose.landmarks[PoseLandmarkType.leftKnee]!.y &&
-        pose.landmarks[PoseLandmarkType.rightHip]!.y > pose.landmarks[PoseLandmarkType.rightKnee]!.y &&
-        pose.landmarks[PoseLandmarkType.leftAnkle]!.y > pose.landmarks[PoseLandmarkType.leftKnee]!.y &&
-        pose.landmarks[PoseLandmarkType.rightAnkle]!.y > pose.landmarks[PoseLandmarkType.rightKnee]!.y &&
-        pose.landmarks[PoseLandmarkType.leftShoulder]!.y < pose.landmarks[PoseLandmarkType.leftHip]!.y &&
-        pose.landmarks[PoseLandmarkType.rightShoulder]!.y < pose.landmarks[PoseLandmarkType.rightHip]!.y) {
+    else if (pose.landmarks[PoseLandmarkType.leftHip]!.y >
+            pose.landmarks[PoseLandmarkType.leftKnee]!.y &&
+        pose.landmarks[PoseLandmarkType.rightHip]!.y >
+            pose.landmarks[PoseLandmarkType.rightKnee]!.y &&
+        pose.landmarks[PoseLandmarkType.leftAnkle]!.y >
+            pose.landmarks[PoseLandmarkType.leftKnee]!.y &&
+        pose.landmarks[PoseLandmarkType.rightAnkle]!.y >
+            pose.landmarks[PoseLandmarkType.rightKnee]!.y &&
+        pose.landmarks[PoseLandmarkType.leftShoulder]!.y <
+            pose.landmarks[PoseLandmarkType.leftHip]!.y &&
+        pose.landmarks[PoseLandmarkType.rightShoulder]!.y <
+            pose.landmarks[PoseLandmarkType.rightHip]!.y) {
       message = 'Setu Bandhasana (Bridge Pose): Proper Form';
     }
 
@@ -376,20 +421,20 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
       PoseLandmarkType.leftHip,
       PoseLandmarkType.rightHip,
     ];
-    
-    return keyPoints.every((point) => 
-      (pose.landmarks[point]?.likelihood ?? 0) > requiredConfidence);
+
+    return keyPoints.every((point) =>
+        (pose.landmarks[point]?.likelihood ?? 0) > requiredConfidence);
   }
 
   double _calculateBodyHeight(Map<PoseLandmarkType, PoseLandmark> landmarks) {
     final nose = landmarks[PoseLandmarkType.nose];
     final leftAnkle = landmarks[PoseLandmarkType.leftAnkle];
     final rightAnkle = landmarks[PoseLandmarkType.rightAnkle];
-    
+
     if (nose == null || leftAnkle == null || rightAnkle == null) {
       return 0;
     }
-    
+
     // Calculate average ankle position
     final ankleY = (leftAnkle.y + rightAnkle.y) / 2;
     return (ankleY - nose.y).abs();
@@ -401,13 +446,15 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
     return [bodyHeight * 0.1, bodyHeight * 0.15, bodyHeight * 0.2];
   }
 
-  bool _checkOneLegUp(Map<PoseLandmarkType, PoseLandmark> landmarks, List<double> thresholds) {
+  bool _checkOneLegUp(
+      Map<PoseLandmarkType, PoseLandmark> landmarks, List<double> thresholds) {
     // Implement logic to check if one leg is up based on landmarks and thresholds
     // This is a placeholder and should be replaced with actual implementation
     return false; // Placeholder return, actual implementation needed
   }
 
-  bool _isArmHorizontal(PoseLandmark shoulder, PoseLandmark wrist, double bodyHeight) {
+  bool _isArmHorizontal(
+      PoseLandmark shoulder, PoseLandmark wrist, double bodyHeight) {
     // Calculate dynamic threshold based on body height
     final threshold = bodyHeight * 0.1; // 10% of body height
     return (shoulder.y - wrist.y).abs() < threshold;
@@ -469,7 +516,7 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
       setState(() {
         _errorMessage = message;
       });
-      
+
       // Auto-hide error after 3 seconds
       Future.delayed(Duration(seconds: 3), () {
         if (!_isDisposed) {
@@ -537,11 +584,13 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
       child: _image != null && image != null
           ? Center(
               child: FittedBox(
-                child: SizedBox(
-                  width: image?.width.toDouble() ?? 300,
-                  height: image?.height.toDouble() ?? 300,
-                  child: CustomPaint(
-                    painter: posePainter(image, poses),
+                child: InteractiveViewer(
+                  child: SizedBox(
+                    width: image?.width.toDouble() ?? 300,
+                    height: image?.height.toDouble() ?? 300,
+                    child: CustomPaint(
+                      painter: posePainter(image, poses),
+                    ),
                   ),
                 ),
               ),
@@ -560,8 +609,7 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
 
   Widget _buildPoseMessage() {
     return Visibility(
-      visible:
-          _image != null, // Message box visible only after image upload
+      visible: _image != null, // Message box visible only after image upload
       child: Container(
         height: 100, // Set a specific smaller height for the message box
         width: 350, // Adjusted width to make the box smaller
@@ -596,8 +644,7 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
               textAlign: TextAlign.center, // Center the message text
               style: GoogleFonts.outfit(
                 color: Color(0xff9B7EBD),
-                fontSize:
-                    16, // Smaller font size for a more compact message
+                fontSize: 16, // Smaller font size for a more compact message
                 fontWeight: FontWeight.w500, // Lighter boldness
               ),
             ),
@@ -695,13 +742,13 @@ class _YogaPoseDetectionState extends State<YogaPoseDetection>
 class posePainter extends CustomPainter {
   final ui.Image? image;
   final List<Pose> poses;
-  
+
   posePainter(this.image, this.poses);
 
   @override
   void paint(Canvas canvas, Size size) {
     if (image == null) return;
-    
+
     canvas.drawImage(image!, Offset.zero, Paint());
 
     Paint paint = Paint()
@@ -874,4 +921,3 @@ class posePainter extends CustomPainter {
     return true;
   }
 }
-
